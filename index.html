@@ -11,7 +11,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-A: #f0f0f0;
+            background-color: #f0f0f0;
         }
         .controls {
             margin-bottom: 10px;
@@ -49,10 +49,10 @@
 <body>
     <h2>Brick Placement Grid</h2>
     <div class="controls">
-        <button onclick="selectBrick('full')"><img src="images/rec1.png" width="80" height="40" alt="Full Brick"></button>
-        <button onclick="selectBrick('half')"><img src="images/rec2.png" width="40" height="40" alt="Half Brick"></button>
-        <button onclick="selectBrick('rec3')"><img src="images/rec3.png" width="60" height="40" alt="Rectangle 3"></button>
-        <button onclick="selectBrick('rec4')"><img src="images/rec4.png" width="100" height="40" alt="Rectangle 4"></button>
+        <button onclick="selectBrick('full')"><img src="rec1.png" width="80" height="40" alt="Full Brick"></button>
+        <button onclick="selectBrick('half')"><img src="rec2.png" width="40" height="40" alt="Half Brick"></button>
+        <button onclick="selectBrick('rec3')"><img src="rec3.png" width="60" height="40" alt="Rectangle 3"></button>
+        <button onclick="selectBrick('rec4')"><img src="rec4.png" width="100" height="40" alt="Rectangle 4"></button>
     </div>
     <div class="grid-container" id="grid"></div>
     <script>
@@ -88,11 +88,18 @@
             let brick = document.createElement("div");
             brick.classList.add("brick");
             brick.draggable = true;
-            let brickWidth = selectedBrick === 'full' ? "80px" : selectedBrick === 'half' ? "40px" : selectedBrick === 'rec3' ? "60px" : "100px";
+            let brickWidth = selectedBrick === 'full' ? "80px" : 
+                             selectedBrick === 'half' ? "40px" : 
+                             selectedBrick === 'rec3' ? "60px" : "100px";
             brick.style.width = brickWidth;
             brick.style.height = "40px";
+
             let brickImage = document.createElement("img");
-            brickImage.src = selectedBrick === 'full' ? 'images/rec1.png' : selectedBrick === 'half' ? 'images/rec2.png' : selectedBrick === 'rec3' ? 'images/rec3.png' : 'images/rec4.png';
+            brickImage.src = selectedBrick === 'full' ? 'rec1.png' : 
+                             selectedBrick === 'half' ? 'rec2.png' : 
+                             selectedBrick === 'rec3' ? 'rec3.png' : 
+                             'rec4.png';
+
             brick.appendChild(brickImage);
             brick.addEventListener("dragstart", dragStart);
             brick.addEventListener("dragend", dragEnd);
