@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Placement Grid</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-A: #f0f0f0;
+        }
+        .controls {
+            margin-bottom: 10px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 40px);
+            grid-template-rows: repeat(10, 40px);
+            gap: 1px;
+            border: 2px solid black;
+            background-color: white;
+            position: relative;
+            width: 410px;
+            height: 410px;
+        }
+        .grid-cell {
+            width: 40px;
+            height: 40px;
+            border: 1px solid red;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .brick {
+            position: absolute;
+            cursor: grab;
+        }
+        .brick img {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>Brick Placement Grid</h2>
+    <div class="controls">
+        <button onclick="selectBrick('full')"><img src="images/rec1.png" width="80" height="40" alt="Full Brick"></button>
+        <button onclick="selectBrick('half')"><img src="images/rec2.png" width="40" height="40" alt="Half Brick"></button>
+        <button onclick="selectBrick('rec3')"><img src="images/rec3.png" width="60" height="40" alt="Rectangle 3"></button>
+        <button onclick="selectBrick('rec4')"><img src="images/rec4.png" width="100" height="40" alt="Rectangle 4"></button>
+    </div>
+    <div class="grid-container" id="grid"></div>
+    <script>
+        let selectedBrick = 'full';
+        let gridSize = 10;
+        let grid = document.getElementById("grid");
+        let bricks = {};
+        let originalPositions = {};
+        
+        let gridCells = [];
+        for (let row = 0; row < gridSize; row++) {
+            gridCells[row] = [];
+            for (let col = 0; col < gridSize; col++) {
+                let cell = document.createElement("div");
+                cell.classList.add("grid-cell");
+                cell.dataset.row = row;
+                cell.dataset.col = col;
+                cell.addEventListener("click", function () {
+                    placeBrick(cell, row, col);
+                });
+                grid.appendChild(cell);
+                gridCells[row][col] = cell;
+            }
+        }
+        
+        function selectBrick(type) {
+            selectedBrick = type;
+        }
+        
+        function placeBrick(cell, row, col) {
+            if (bricks[`${row}-${col}`]) return;
+            
+            let brick = document.createElement("div");
+            brick.classList.add("brick");
+            brick.draggable = true;
+            let brickWidth = selectedBrick === 'full' ? "80px" : selectedBrick === 'half' ? "40px" : selectedBrick === 'rec3' ? "60px" : "100px";
+            brick.style.width = brickWidth;
+            brick.style.height = "40px";
+            let brickImage = document.createElement("img");
+            brickImage.src = selectedBrick === 'full' ? 'images/rec1.png' : selectedBrick === 'half' ? 'images/rec2.png' : selectedBrick === 'rec3' ? 'images/rec3.png' : 'images/rec4.png';
+            brick.appendChild(brickImage);
+            brick.addEventListener("dragstart", dragStart);
+            brick.addEventListener("dragend", dragEnd);
+            
+            cell.innerHTML = "";
+            cell.appendChild(brick);
+            bricks[`${row}-${col}`] = brick;
+            originalPositions[brick] = selectedBrick;
+        }
+        
+        function dragStart(event) {
+            event.dataTransfer.setData("text/plain", event.target.outerHTML);
+            event.target.parentElement.innerHTML = "";
+        }
+        
+        function dragEnd(event) {
+            let draggedBrick = event.target;
+            if (!grid.contains(draggedBrick)) {
+                let type = originalPositions[draggedBrick];
+                let buttons = document.querySelectorAll(".controls button");
+                buttons.forEach(btn => {
+                    if (btn.innerHTML.includes(type)) {
+                        btn.appendChild(draggedBrick);
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
